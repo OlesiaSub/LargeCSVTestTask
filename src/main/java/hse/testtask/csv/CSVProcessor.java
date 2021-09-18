@@ -11,46 +11,60 @@ public class CSVProcessor {
     private static int headerNumber;
     private static final String delimiter = ",";
     private static String filePathName;
-    private static final SortedSet<Double> items = new TreeSet<>();
+    private final SortedSet<String> values = new TreeSet<>((fstLine, sndLine) -> {
+        Double fstTime = getTime(fstLine);
+        Double sndTime = getTime(sndLine);
+        if (fstTime < sndTime) return -1;
+        else if (fstLine.equals(sndLine)) return 0;
+        return 1;
+    });
 
     public CSVProcessor(String filePathName, int headerNumber) {
         CSVProcessor.filePathName = filePathName;
         CSVProcessor.headerNumber = headerNumber;
     }
 
-    static void addItemToSet(Double newItem) {
-        if (items.size() < 10) {
-            items.add(newItem);
+    private Double getTime(String line) {
+        String[] lines = line.split(delimiter);
+        String timeStringFormat = lines[headerNumber];
+        return Double.parseDouble(timeStringFormat);
+    }
+
+    public SortedSet<String> getValues() {
+        return values;
+    }
+
+    private void addItemToSet(String newItem) {
+        Double current = getTime(newItem);
+        if (values.size() < 10) {
+            values.add(newItem);
         } else {
-            Double highest = items.last();
-            if (newItem < highest) {
-                items.remove(highest);
-                items.add(newItem);
+            Double highest = getTime(values.last());
+            if (current < highest) {
+                values.remove(values.last());
+                values.add(newItem);
             }
         }
     }
 
     public void process() throws IOException {
         traverseLines();
-        for (Double item : items) {
-            System.out.println(item);
+    }
+
+    public void printResult() {
+        for (String value : values) {
+            System.out.println(value);
         }
     }
 
     private void traverseLines() throws IOException {
         FileReader fileReader = new FileReader(filePathName);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String currentLine = bufferedReader.readLine();
+        String currentLine;
+        bufferedReader.readLine();
         while ((currentLine = bufferedReader.readLine()) != null) {
-            processLine(currentLine);
+            addItemToSet(currentLine);
         }
-    }
-
-    private static void processLine(String line) {
-        String[] lines = line.split(delimiter);
-        String timeStringFormat = lines[headerNumber];
-        Double time = Double.parseDouble(timeStringFormat);
-        addItemToSet(time);
     }
 
 }
