@@ -12,12 +12,9 @@ public class Main {
      *
      */
     public static void main(String[] args) throws IOException {
-        String filePathName = "/home/olesya/IdeaProjects/LargeCSVTestTask/src/test/resources/smallTest.csv";
-//        String filePathName = "/home/olesya/IdeaProjects/LargeCSVTestTask/src/test/resources/cancer.csv";
-//        String filePathName = "/home/olesya/IdeaProjects/LargeCSVTestTask/src/test/resources/ratings.csv";
-//        String filePathName = args[0];
-//        int headerNumber = Integer.parseInt(args[1]);
-        CSVProcessor processor = new CSVProcessor(filePathName, 2);
+        String filePathName = args[0];
+        int headerNumber = Integer.parseInt(args[1]);
+        CSVProcessor processor = new CSVProcessor(filePathName, headerNumber);
         processor.process();
         processor.printResult();
     }
