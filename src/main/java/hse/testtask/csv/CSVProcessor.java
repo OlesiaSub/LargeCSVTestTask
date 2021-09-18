@@ -47,17 +47,13 @@ public class CSVProcessor {
         }
     }
 
-    public void process() throws IOException {
-        traverseLines();
-    }
-
     public void printResult() {
         for (String value : values) {
             System.out.println(value);
         }
     }
 
-    private void traverseLines() throws IOException {
+    public void process() throws IOException {
         FileReader fileReader = new FileReader(filePathName);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String currentLine;
